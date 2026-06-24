@@ -7,7 +7,7 @@ from db.database import get_conn
 
 _session = None
 
-def def get_session():
+def get_session():
     global _session
     if _session:
         return _session
