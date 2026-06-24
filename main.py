@@ -109,10 +109,10 @@ def main():
 
 def _run_telegram():
     try:
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         from telegram_bot import run_bot
         run_bot()
     except Exception as e:
         print(f"[TG] Bot error: {e}")
-
-if __name__ == "__main__":
-    main()
