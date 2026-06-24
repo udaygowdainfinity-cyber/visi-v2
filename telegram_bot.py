@@ -256,20 +256,27 @@ async def cmd_setparam(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Error: {e}")
 
 def run_bot():
-    missing = config.validate()
-    if "TELEGRAM_BOT_TOKEN" in missing:
-        print("[Bot] TELEGRAM_BOT_TOKEN missing — Telegram bot disabled")
+    import asyncio
+    if not config.TELEGRAM_BOT_TOKEN:
+        print("[Bot] TELEGRAM_BOT_TOKEN missing — disabled")
         return
-    app = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
-    app.add_handler(CommandHandler("start",    cmd_start))
-    app.add_handler(CommandHandler("help",     cmd_help))
-    app.add_handler(CommandHandler("status",   cmd_status))
-    app.add_handler(CommandHandler("signal",   cmd_signal))
-    app.add_handler(CommandHandler("backtest", cmd_backtest))
-    app.add_handler(CommandHandler("trades",   cmd_trades))
-    app.add_handler(CommandHandler("summary",  cmd_summary))
-    app.add_handler(CommandHandler("data",     cmd_data))
-    app.add_handler(CommandHandler("params",   cmd_params))
-    app.add_handler(CommandHandler("setparam", cmd_setparam))
-    print("[Bot] Telegram bot started — polling...")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    
+    async def start():
+        app = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
+        app.add_handler(CommandHandler("start",    cmd_start))
+        app.add_handler(CommandHandler("help",     cmd_help))
+        app.add_handler(CommandHandler("status",   cmd_status))
+        app.add_handler(CommandHandler("signal",   cmd_signal))
+        app.add_handler(CommandHandler("backtest", cmd_backtest))
+        app.add_handler(CommandHandler("trades",   cmd_trades))
+        app.add_handler(CommandHandler("summary",  cmd_summary))
+        app.add_handler(CommandHandler("data",     cmd_data))
+        app.add_handler(CommandHandler("params",   cmd_params))
+        app.add_handler(CommandHandler("setparam", cmd_setparam))
+        print("[Bot] Telegram bot started — polling...")
+        await app.initialize()
+        await app.start()
+        await app.updater.start_polling()
+        await asyncio.sleep(float('inf'))
+
+    asyncio.run(start())
