@@ -125,7 +125,7 @@ def fetch_historical(instrument, from_date, to_date, force=False, verbose=True):
         return _load(table, instrument, from_date, to_date)
 
     df5 = _download('FIVE_MINUTE', 'candles_5min', 50, '5-min')
-    df1 = _download('ONE_MINUTE',  'candles_1min', 25, '1-min')
+    df1 = _download('ONE_MINUTE',  'candles_1min', 10, '1-min')
     return df5, df1
 
 def get_live_candles(instrument, interval='FIVE_MINUTE', n=50):
